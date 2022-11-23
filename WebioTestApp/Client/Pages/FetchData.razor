@@ -1,0 +1,47 @@
+﻿@page "/fetchdata"
+@inject HttpClient Http
+<PageTitle>Weather forecast</PageTitle>
+
+<h1>Weather forecast</h1>
+
+<p>This component demonstrates fetching data from the server.</p>
+
+@if (data == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Lp</th>
+                <th>Name</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var d in data)
+            {
+                <tr>
+                    <td>@d.DataId</td>
+                    <td>@d.DataName</td>
+                    <td>@d.DataDate</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    
+        private IEnumerable<DataDto>? data;
+        private const int count = 5;
+        private int offset;
+
+    protected override async Task OnInitializedAsync()
+    {
+        offset = 1;
+        data = await Http.GetFromJsonAsync<IEnumerable<DataDto>>($"api/data?count={count}&offset={offset}");
+    }
+}
